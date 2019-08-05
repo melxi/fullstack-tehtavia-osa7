@@ -1,36 +1,43 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { useField } from '../hooks'
 
 const BlogForm = props => {
-  const { title, author, url, addBlog } = props
+  const [title, titleReset] = useField('text')
+  const [author, authorReset] = useField('text')
+  const [url, urlReset] = useField('text')
+
+  const handleSubmit = event => {
+    event.preventDefault()
+    props.createBlog({
+      title: title.value,
+      author: author.value,
+      url: url.value
+    })
+    titleReset()
+    authorReset()
+    urlReset()
+  }
 
   return (
     <div>
       <h2>create new</h2>
-      <form onSubmit={addBlog}>
+      <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="title">title:</label>
-          <input {...title.omitreset}/>
+          <input {...title}/>
         </div>
         <div>
           <label htmlFor="author">author:</label>
-          <input {...author.omitreset}/>
+          <input {...author}/>
         </div>
         <div>
           <label htmlFor="url">url:</label>
-          <input {...url.omitreset}/>
+          <input {...url}/>
         </div>
         <button type="submit">create</button>
       </form>
     </div>
   )
-}
-
-BlogForm.propTypes = {
-  title: PropTypes.object.isRequired,
-  author: PropTypes.object.isRequired,
-  url: PropTypes.object.isRequired,
-  addBlog: PropTypes.func.isRequired
 }
 
 export default BlogForm

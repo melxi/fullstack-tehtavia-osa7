@@ -7,22 +7,17 @@ import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { useField } from './hooks'
+import { initializeBlogs, likeBlog, removeBlog } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
 
 const App = props => {
   const [user, setUser] = useState(null)
-  const username = useField('text')
-  const password = useField('password')
+  const [username] = useField('text')
+  const [password] = useField('password')
   const [blogs, setBlogs] = useState([])
-  const title  = useField('text')
-  const author = useField('text')
-  const url = useField('text')
 
   useEffect(() => {
-    blogService
-      .getAll().then(initialBlogs => {
-        setBlogs(initialBlogs)
-      })
+    props.initializeBlogs()
   }, [])
 
   useEffect(() => {
@@ -45,9 +40,7 @@ const App = props => {
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
-      username.reset()
-      password.reset()
-      props.setNotification(`${user.username} successfully logged in`, 'success')
+      props.setNotification(`${user.username} successfully logged in`)
     } catch (exception) {
       props.setNotification('wrong username or password', 'error')
     }
@@ -59,22 +52,12 @@ const App = props => {
     window.localStorage.removeItem('loggedBlogAppUser')
   }
 
-  const addBlog = event => {
-    event.preventDefault()
-    const blogObject = {
-      title: title.value,
-      author: author.value,
-      url: url.value
-    }
-
+  const createBlog = blog => {
     blogService
-      .create(blogObject)
-      .then(data => {
-        setBlogs(blogs.concat(data))
-        props.setNotification(`a new blog ${data.title} by ${data.author} added`)
-        title.reset('')
-        author.reset('')
-        url.reset('')
+      .create(blog)
+      .then(createdBlog => {
+        setBlogs(blogs.concat(createdBlog))
+        props.setNotification(`a new blog ${createdBlog.title} by ${createdBlog.author} added`)
       })
       .catch(exception => {
         if (exception.toString().includes('401')) {
@@ -85,29 +68,17 @@ const App = props => {
       })
   }
 
-  const likeBlog = id => {
-    const blog = blogs.find(blog => blog.id === id)
-    const likedBlog = { ...blog, likes: blog.likes + 1 }
-
-    blogService
-      .update(id, likedBlog)
-      .then(returnedBlog => {
-        setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
-        props.setNotification(`blog ${returnedBlog.title} by ${returnedBlog.author} liked!`)
-      })
+  const likeBlog = blog => {
+    props.likeBlog(blog)
+    props.setNotification(`blog ${blog.title} by ${blog.author} liked!`)
   }
 
-  const removeBlog = id => {
-    const blog = blogs.find(blog => blog.id === id)
+  const removeBlog = blog => {
     const confirmRemoval = window.confirm(`remove blog ${blog.title} ${blog.author}`)
 
     if (confirmRemoval) {
-      blogService
-        .remove(id)
-        .then(() => {
-          setBlogs(blogs.filter(blog => blog.id !== id))
-          props.setNotification(`blog ${blog.title} by ${blog.author} removed!`)
-        })
+      props.removeBlog(blog)
+      props.setNotification(`blog ${blog.title} by ${blog.author} removed!`)
     }
   }
 
@@ -119,11 +90,11 @@ const App = props => {
         <form onSubmit={handleLogin}>
           <div>
             <label htmlFor="username">username</label>
-            <input {...username.omitreset}/>
+            <input {...username}/>
           </div>
           <div>
             <label htmlFor="password">password</label>
-            <input {...password.omitreset}/>
+            <input {...password}/>
           </div>
           <button type="submit">login</button>
         </form>
@@ -139,23 +110,27 @@ const App = props => {
       <button onClick={handleLogout}>logout</button>
       <Togglable buttonLabel="new note">
         <BlogForm
-          title={title}
-          author={author}
-          url={url}
-          addBlog={addBlog}
+          createBlog={createBlog}
         />
       </Togglable>
-      {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
+      {props.blogs.sort((a, b) => b.likes - a.likes).map(blog =>
         <Blog
           key={blog.id}
           blog={blog}
-          likeBlog={likeBlog}
-          removeBlog={removeBlog}
+          like={likeBlog}
+          remove={removeBlog}
           user={user}
+          creator={blog.user && blog.user.username === user.username}
         />
       )}
     </div>
   )
 }
 
-export default connect(null, { setNotification })(App)
+const mapStateToProps = state => {
+  return {
+    blogs: state.blogs
+  }
+}
+
+export default connect(mapStateToProps, { initializeBlogs, likeBlog, removeBlog, setNotification })(App)
