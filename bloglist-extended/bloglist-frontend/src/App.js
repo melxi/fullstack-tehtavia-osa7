@@ -1,30 +1,28 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import loginService from './services/login'
 import blogService from './services/blogs'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { useField } from './hooks'
-import { initializeBlogs, likeBlog, removeBlog } from './reducers/blogReducer'
+import { setUser, userLogin, userLogout } from './reducers/userReducer'
+import { initializeBlogs, createBlog, likeBlog, removeBlog } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
 
 const App = props => {
-  const [user, setUser] = useState(null)
   const [username] = useField('text')
   const [password] = useField('password')
-  const [blogs, setBlogs] = useState([])
 
   useEffect(() => {
     props.initializeBlogs()
-  }, [])
+  })
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      props.setUser(user)
       blogService.setToken(user.token)
     }
   }, [])
@@ -32,14 +30,10 @@ const App = props => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({
+      const user = await props.userLogin({
         username: username.value,
         password: password.value
       })
-
-      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
       props.setNotification(`${user.username} successfully logged in`)
     } catch (exception) {
       props.setNotification('wrong username or password', 'error')
@@ -47,25 +41,22 @@ const App = props => {
   }
 
   const handleLogout = () => {
-    setUser(null)
-    blogService.destroyToken()
-    window.localStorage.removeItem('loggedBlogAppUser')
+    props.setUser(null)
+    props.userLogout()
   }
 
-  const createBlog = blog => {
-    blogService
-      .create(blog)
-      .then(createdBlog => {
-        setBlogs(blogs.concat(createdBlog))
-        props.setNotification(`a new blog ${createdBlog.title} by ${createdBlog.author} added`)
-      })
-      .catch(exception => {
-        if (exception.toString().includes('401')) {
-          props.setNotification('You are not authorized to perform this operation', 'error')
-        } else {
-          props.setNotification('Failed to add a new blog', 'error')
-        }
-      })
+  const createBlog = async blog => {
+    try {
+      const createdBlog = await props.createBlog(blog)
+      props.setNotification(`a new blog ${createdBlog.title} by ${createdBlog.author} added`)
+    }
+    catch (exception) {
+      if (exception.toString().includes('401')) {
+        props.setNotification('You are not authorized to perform this operation', 'error')
+      } else {
+        props.setNotification('Failed to add a new blog', 'error')
+      }
+    }
   }
 
   const likeBlog = blog => {
@@ -82,7 +73,7 @@ const App = props => {
     }
   }
 
-  if (user === null) {
+  if (props.user === null) {
     return (
       <div>
         <h1>log in to application</h1>
@@ -106,7 +97,7 @@ const App = props => {
     <div>
       <h2>blogs</h2>
       <Notification />
-      <p>{user.name} logged in</p>
+      <p>{props.user.name} logged in</p>
       <button onClick={handleLogout}>logout</button>
       <Togglable buttonLabel="new note">
         <BlogForm
@@ -119,8 +110,8 @@ const App = props => {
           blog={blog}
           like={likeBlog}
           remove={removeBlog}
-          user={user}
-          creator={blog.user && blog.user.username === user.username}
+          user={props.user}
+          creator={blog.user && blog.user.username === props.user.username}
         />
       )}
     </div>
@@ -129,8 +120,9 @@ const App = props => {
 
 const mapStateToProps = state => {
   return {
+    user: state.user,
     blogs: state.blogs
   }
 }
 
-export default connect(mapStateToProps, { initializeBlogs, likeBlog, removeBlog, setNotification })(App)
+export default connect(mapStateToProps, { setUser, userLogin, userLogout, initializeBlogs, createBlog, likeBlog, removeBlog, setNotification })(App)
