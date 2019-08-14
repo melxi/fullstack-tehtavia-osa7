@@ -5,13 +5,14 @@ import blogService from './services/blogs'
 import User from './components/User'
 import Users from './components/Users'
 import Blog from './components/Blog'
+import BlogDetails from './components/BlogDetails'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { useField } from './hooks'
 import { setUser, userLogin, userLogout } from './reducers/loginReducer'
 import { initializeUsers } from './reducers/userReducer'
-import { initializeBlogs, createBlog, likeBlog, removeBlog } from './reducers/blogReducer'
+import { initializeBlogs, createBlog } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
 
 const App = props => {
@@ -67,20 +68,6 @@ const App = props => {
     }
   }
 
-  const likeBlog = blog => {
-    props.likeBlog(blog)
-    props.setNotification(`blog ${blog.title} by ${blog.author} liked!`)
-  }
-
-  const removeBlog = blog => {
-    const confirmRemoval = window.confirm(`remove blog ${blog.title} ${blog.author}`)
-
-    if (confirmRemoval) {
-      props.removeBlog(blog)
-      props.setNotification(`blog ${blog.title} by ${blog.author} removed!`)
-    }
-  }
-
   if (props.user === null) {
     return (
       <div>
@@ -115,16 +102,8 @@ const App = props => {
             createBlog={createBlog}
           />
         </Togglable>
-        {props.blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-          <Blog
-            key={blog.id}
-            blog={blog}
-            like={likeBlog}
-            remove={removeBlog}
-            user={props.user}
-            creator={blog.user && blog.user.username === props.user.username}
-          />
-        )}
+        <Route exact path="/" component={Blog} />
+        <Route exact path="/blogs/:id" component={BlogDetails} />
       </Router>
     </div>
   )
@@ -144,8 +123,6 @@ const mapDispatchToProps = {
   userLogout,
   initializeBlogs,
   createBlog,
-  likeBlog,
-  removeBlog,
   initializeUsers,
   setNotification
 }

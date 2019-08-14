@@ -8,6 +8,15 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs.map(blog => blog.toJSON()))  
 })
 
+blogsRouter.get('/:id', async (request, response) => {
+  try {
+    const blog = await Blog.findById(request.params.id).populate('user', {username: 1, name: 1})
+    response.json(blog)
+  } catch (exception) {
+    next(exception)
+  }
+})
+
 blogsRouter.post('/', async (request, response, next) => {
   const body = request.body
   
@@ -29,7 +38,7 @@ blogsRouter.post('/', async (request, response, next) => {
     })
 
     const savedBlog = await blog.save()
-    const populatedBlog = await Blog.findById(savedBlog._id).populate('user', {username: 1, name: 1, id: 1})    
+    const populatedBlog = await Blog.findById(savedBlog._id).populate('user', {username: 1, name: 1, id: 1})  
     user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()
     response.status(201).json(populatedBlog)
@@ -70,8 +79,8 @@ blogsRouter.put('/:id', async (request, response, next) => {
   }
 
   try {
-    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-    response.json(updatedBlog.toJSON())
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true }).populate('user', {username: 1, name: 1, id: 1})
+    response.json(updatedBlog)
   } catch (exception) {
     next(exception)
   }

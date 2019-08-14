@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
-const Blog = ({ blog, like, remove, creator }) => {
-  const [expanded, setExpanded] = useState(false)
+import React from 'react'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
+const Blog = (props) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -10,25 +11,21 @@ const Blog = ({ blog, like, remove, creator }) => {
     marginBottom: 5
   }
 
-  const details = () => (
-    <div className="details">
-      <a href={blog.url}>{blog.url}</a>
-      <div>{blog.likes} likes
-        <button onClick={() => {like(blog)}}>like</button>
-      </div>
-      <div>added by {blog.user.name}</div>
-      {creator &&(<button onClick={() => remove(blog)}>remove </button>)}
-    </div>
-  )
-
   return (
-    <div className="blog" style={blogStyle}>
-      <div data-testid="container" onClick={() => setExpanded(!expanded)}>
-        {blog.title} {blog.author}
-      </div>
-      {expanded && details()}
+    <div>
+      {props.blogs.map(blog => (
+        <div className="blog" style={blogStyle} key={blog.id} data-testid="container" >
+          <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
+        </div>
+      ))}
     </div>
   )
 }
 
-export default Blog
+const mapStateToProps = state => {
+  return {
+    blogs: state.blogs
+  }
+}
+
+export default connect(mapStateToProps)(Blog)
