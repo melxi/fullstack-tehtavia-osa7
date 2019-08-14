@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import blogService from './services/blogs'
+import Users from './components/Users'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { useField } from './hooks'
-import { setUser, userLogin, userLogout } from './reducers/userReducer'
+import { setUser, userLogin, userLogout } from './reducers/loginReducer'
 import { initializeBlogs, createBlog, likeBlog, removeBlog } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
 
@@ -16,7 +18,7 @@ const App = props => {
 
   useEffect(() => {
     props.initializeBlogs()
-  })
+  }, [])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
@@ -99,21 +101,24 @@ const App = props => {
       <Notification />
       <p>{props.user.name} logged in</p>
       <button onClick={handleLogout}>logout</button>
-      <Togglable buttonLabel="new note">
-        <BlogForm
-          createBlog={createBlog}
-        />
-      </Togglable>
-      {props.blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          like={likeBlog}
-          remove={removeBlog}
-          user={props.user}
-          creator={blog.user && blog.user.username === props.user.username}
-        />
-      )}
+      <Router>
+        <Route path="/users" render={() => <Users />} />
+        <Togglable buttonLabel="new note">
+          <BlogForm
+            createBlog={createBlog}
+          />
+        </Togglable>
+        {props.blogs.sort((a, b) => b.likes - a.likes).map(blog =>
+          <Blog
+            key={blog.id}
+            blog={blog}
+            like={likeBlog}
+            remove={removeBlog}
+            user={props.user}
+            creator={blog.user && blog.user.username === props.user.username}
+          />
+        )}
+      </Router>
     </div>
   )
 }

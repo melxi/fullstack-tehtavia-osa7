@@ -52,10 +52,10 @@ export const likeBlog = blog => {
 
 export const removeBlog = blog => {
   return async dispatch => {
-    const removedBlog = await blogService.remove(blog)
+    await blogService.remove(blog)
     dispatch({
       type:  'REMOVE_BLOG',
-      data: removedBlog
+      data: blog
     })
   }
 }
