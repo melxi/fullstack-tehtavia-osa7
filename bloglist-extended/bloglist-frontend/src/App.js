@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import blogService from './services/blogs'
+import User from './components/User'
 import Users from './components/Users'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
@@ -9,6 +10,7 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { useField } from './hooks'
 import { setUser, userLogin, userLogout } from './reducers/loginReducer'
+import { initializeUsers } from './reducers/userReducer'
 import { initializeBlogs, createBlog, likeBlog, removeBlog } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
 
@@ -18,6 +20,10 @@ const App = props => {
 
   useEffect(() => {
     props.initializeBlogs()
+  }, [])
+
+  useEffect(() => {
+    props.initializeUsers()
   }, [])
 
   useEffect(() => {
@@ -102,7 +108,8 @@ const App = props => {
       <p>{props.user.name} logged in</p>
       <button onClick={handleLogout}>logout</button>
       <Router>
-        <Route path="/users" render={() => <Users />} />
+        <Route exact path="/users" component={Users} />
+        <Route exact path="/users/:id" component={User} />
         <Togglable buttonLabel="new note">
           <BlogForm
             createBlog={createBlog}
@@ -126,8 +133,21 @@ const App = props => {
 const mapStateToProps = state => {
   return {
     user: state.user,
-    blogs: state.blogs
+    blogs: state.blogs,
+    users: state.users
   }
 }
 
-export default connect(mapStateToProps, { setUser, userLogin, userLogout, initializeBlogs, createBlog, likeBlog, removeBlog, setNotification })(App)
+const mapDispatchToProps = {
+  setUser,
+  userLogin,
+  userLogout,
+  initializeBlogs,
+  createBlog,
+  likeBlog,
+  removeBlog,
+  initializeUsers,
+  setNotification
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

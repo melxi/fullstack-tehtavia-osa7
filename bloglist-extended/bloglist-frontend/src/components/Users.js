@@ -1,16 +1,12 @@
-import React, { useEffect } from 'react'
+import React from 'react'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { initializeUsers } from '../reducers/userReducer'
 
 const Users = (props) => {
-  useEffect(() => {
-    props.initializeUsers()
-  }, [])
-
   const users = props.users.map(user => {
     return (
       <tr key={user.id}>
-        <td>{user.name}</td>
+        <td><Link to={`/users/${user.id}`}>{user.name}</Link></td>
         <td>{user.blogs.length}</td>
       </tr>
     )
@@ -38,4 +34,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, { initializeUsers })(Users)
+export default connect(mapStateToProps)(Users)
