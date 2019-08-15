@@ -28,13 +28,13 @@ blogsRouter.post('/', async (request, response, next) => {
     }
 
     const user = await User.findById(decodedToken.id)
-
+    
     const blog = new Blog({
       title: body.title,
       author: body.author,
       url: body.url,
       likes: body.likes === undefined ? 0 : body.likes,
-      user: user.id
+      user: user._id
     })
 
     const savedBlog = await blog.save()
@@ -45,6 +45,20 @@ blogsRouter.post('/', async (request, response, next) => {
   } catch (exception) {
     next(exception)
   }
+})
+
+blogsRouter.post('/:id/comments', async (request, response, next) => {
+  const body = request.body
+  
+  try {
+    const blog = await Blog.findById(request.params.id)
+    blog.comments = blog.comments.concat(body.content)
+    await blog.save()
+    response.status(201).json(blog)
+  } catch (exception) {
+    next(exception)
+  }
+
 })
 
 blogsRouter.delete('/:id', async (request, response, next) => {

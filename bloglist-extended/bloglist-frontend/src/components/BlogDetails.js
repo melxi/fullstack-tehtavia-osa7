@@ -40,6 +40,10 @@ const BlogDetails = (props) => {
         <div>added by {blog.user.name}</div>
         {blog.user.username === user.username &&(<button onClick={() => remove(blog)}>remove </button>)}
       </div>
+      <h3>comments</h3>
+      <ul>
+        {blog.comments.map(comment => <li key={blog.id}>{comment}</li>)}
+      </ul>
     </div>
   )
 }

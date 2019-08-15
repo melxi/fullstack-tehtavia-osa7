@@ -1,13 +1,15 @@
 import blogService from '../services/blogs'
 
+const byLikes = (a, b) => b.likes - a.likes
+
 const blogReducer = (state = [], action) => {
   switch (action.type) {
   case 'INIT_BLOGS':
-    return action.data
+    return action.data.sort(byLikes)
   case 'CREATE_BLOG':
-    return [...state, action.data]
+    return [...state, action.data].sort(byLikes)
   case 'LIKE_BLOG':
-    return state.map(blog => blog.id !== action.data.id ? blog : action.data)
+    return state.map(blog => blog.id !== action.data.id ? blog : action.data).sort(byLikes)
   case 'REMOVE_BLOG':
     return state.filter(blog => blog.id !== action.data.id)
   default:
