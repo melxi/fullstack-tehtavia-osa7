@@ -2,15 +2,17 @@ import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import blogService from './services/blogs'
-import User from './components/User'
-import Users from './components/Users'
+import Navigation from './components/Navigation'
+import LoginForm from './components/LoginForm'
 import Blog from './components/Blog'
 import BlogDetails from './components/BlogDetails'
 import BlogForm from './components/BlogForm'
+import User from './components/User'
+import Users from './components/Users'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { useField } from './hooks'
-import { setUser, userLogin, userLogout } from './reducers/loginReducer'
+import { setUser, userLogin,  } from './reducers/loginReducer'
 import { initializeUsers } from './reducers/userReducer'
 import { initializeBlogs, createBlog } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
@@ -49,11 +51,6 @@ const App = props => {
     }
   }
 
-  const handleLogout = () => {
-    props.setUser(null)
-    props.userLogout()
-  }
-
   const createBlog = async blog => {
     try {
       const createdBlog = await props.createBlog(blog)
@@ -69,32 +66,15 @@ const App = props => {
   }
 
   if (props.user === null) {
-    return (
-      <div>
-        <h1>log in to application</h1>
-        <Notification />
-        <form onSubmit={handleLogin}>
-          <div>
-            <label htmlFor="username">username</label>
-            <input {...username}/>
-          </div>
-          <div>
-            <label htmlFor="password">password</label>
-            <input {...password}/>
-          </div>
-          <button type="submit">login</button>
-        </form>
-      </div>
-    )
+    return <LoginForm username={username} password={password} handleLogin={handleLogin} />
   }
 
   return (
     <div>
-      <h2>blogs</h2>
-      <Notification />
-      <p>{props.user.name} logged in</p>
-      <button onClick={handleLogout}>logout</button>
       <Router>
+        <Navigation />
+        <h2>blogs</h2>
+        <Notification />
         <Route exact path="/users" component={Users} />
         <Route exact path="/users/:id" component={User} />
         <Togglable buttonLabel="new note">
@@ -120,7 +100,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   setUser,
   userLogin,
-  userLogout,
   initializeBlogs,
   createBlog,
   initializeUsers,

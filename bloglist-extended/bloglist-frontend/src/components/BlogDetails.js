@@ -4,7 +4,7 @@ import { likeBlog, removeBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
 const BlogDetails = (props) => {
-  const { 
+  const {
     user,
     blog,
     likeBlog,
