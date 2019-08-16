@@ -6,7 +6,7 @@ const config = (env, argv) => {
   
   const backend_url = argv.mode === 'production'
     ? 'http://localhost:3003'
-    : 'http://localhost:3003'
+    : 'heroku'
 
   return {
     entry: ['@babel/polyfill', './bloglist-frontend/src/index.js'],
