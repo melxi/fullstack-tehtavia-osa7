@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { likeBlog, removeBlog, commentBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { useField } from '../hooks'
+import { Form, Input, Button, Icon, Label, Comment, Header } from 'semantic-ui-react'
 
 const BlogDetails = (props) => {
   const {
@@ -42,21 +43,50 @@ const BlogDetails = (props) => {
 
   return (
     <div>
-      <h1>{blog.title}</h1>
+      <Header
+        as='h2'
+        content={blog.title}
+        style={{
+          fontSize: '1.7em',
+          fontWeight: 'normal'
+        }}
+      />
       <a href={blog.url}>{blog.url}</a>
-      <div>{blog.likes} likes
-        <button onClick={() => {like(blog)}}>like</button>
-        <div>added by {blog.user.name}</div>
-        {blog.user.username === user.username &&(<button onClick={() => remove(blog)}>remove </button>)}
+      <div>
+        <Button as='div' labelPosition='right'>
+          <Button color='red' onClick={() => {like(blog)}}>
+            <Icon name='heart' />
+            Like
+          </Button>
+          <Label as='a' basic color='red' pointing='left'>
+            {blog.likes}
+          </Label>
+        </Button>
+        <Label>added by {blog.user.name}</Label>
+        <div style={{ marginTop: '0.5em' }}>
+          {blog.user.username === user.username &&(<Button negative onClick={() => remove(blog)}>remove </Button>)}
+        </div>
       </div>
-      <h3>comments</h3>
-      <form onSubmit={handleSubmit}>
-        <input {...comment} />
-        <button type="submit">add comment</button>
-      </form>
-      <ul>
-        {blog.comments.map(comment => <li key={comment}>{comment}</li>)}
-      </ul>
+      <Comment.Group>
+        <Header as='h3' dividing>
+          comments
+        </Header>
+        <Form onSubmit={handleSubmit}>
+          <Input {...comment} action='comment' placeholder='add comment' />
+        </Form>
+        {blog.comments.map(comment => (
+          <Comment key={comment}>
+            <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
+            <Comment.Content>
+              <Comment.Author>Anonymous</Comment.Author>
+              <Comment.Metadata>
+                <div>Today</div>
+              </Comment.Metadata>
+              <Comment.Text>{comment}</Comment.Text>
+            </Comment.Content>
+          </Comment>
+        ))}
+      </Comment.Group>
     </div>
   )
 }

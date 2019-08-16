@@ -4,6 +4,7 @@ import { useField } from '../hooks'
 import { connect } from 'react-redux'
 import { createBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { Button, Form, Header } from 'semantic-ui-react'
 
 const BlogForm = props => {
   const [title, titleReset] = useField('text')
@@ -33,24 +34,30 @@ const BlogForm = props => {
 
   return (
     <Togglable buttonLabel="new note">
-      <div>
-        <h2>create new</h2>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="title">title:</label>
-            <input {...title}/>
-          </div>
-          <div>
-            <label htmlFor="author">author:</label>
-            <input {...author}/>
-          </div>
-          <div>
-            <label htmlFor="url">url:</label>
-            <input {...url}/>
-          </div>
-          <button type="submit">create</button>
-        </form>
-      </div>
+      <Header
+        as='h3'
+        content='create new'
+        style={{
+          fontSize: '2em',
+          fontWeight: 'normal',
+          marginBottom: '0.5em'
+        }}
+      />
+      <Form onSubmit={handleSubmit}>
+        <Form.Field>
+          <label>title</label>
+          <input {...title} placeholder='title' />
+        </Form.Field>
+        <Form.Field>
+          <label>author</label>
+          <input {...author} placeholder='author' />
+        </Form.Field>
+        <Form.Field>
+          <label>url</label>
+          <input {...url} placeholder='url' />
+        </Form.Field>
+        <Button positive type='submit'>create</Button>
+      </Form>
     </Togglable>
   )
 }

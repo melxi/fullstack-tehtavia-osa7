@@ -1,26 +1,31 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { Card, Header } from 'semantic-ui-react'
 
 const Blog = (props) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
+    marginBottom: 5,
+    borderWidth: 2
   }
 
   return (
     <div>
       {props.blogs.map(blog => (
-        <div className="blog" style={blogStyle} key={blog.id} data-testid="container" >
-          <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
-        </div>
+        <Card fluid color="black" className="blog" style={blogStyle} key={blog.id} data-testid="container" >
+          <Header as="h2" style={{
+            fontSize: '2em',
+            fontWeight: 'normal'
+          }}><Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link></Header>
+        </Card>
       ))}
     </div>
   )
 }
+
+
 
 const mapStateToProps = state => {
   return {

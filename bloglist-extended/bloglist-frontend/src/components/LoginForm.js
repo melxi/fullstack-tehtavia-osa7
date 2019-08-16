@@ -1,8 +1,10 @@
 import React from 'react'
+import Notification from './Notification'
 import { useField } from '../hooks'
 import { connect } from 'react-redux'
 import { userLogin } from '../reducers/loginReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { Button, Form, Grid, Header, Segment } from 'semantic-ui-react'
 
 const LoginForm = (props) => {
   const [username] = useField('text')
@@ -22,20 +24,23 @@ const LoginForm = (props) => {
   }
 
   return (
-    <div>
-      <h1>log in to application</h1>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label htmlFor="username">username</label>
-          <input {...username}/>
-        </div>
-        <div>
-          <label htmlFor="password">password</label>
-          <input {...password}/>
-        </div>
-        <button type="submit">login</button>
-      </form>
-    </div>
+    <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+      <Grid.Column style={{ maxWidth: 450 }}>
+        <Notification />
+        <Header as='h2' textAlign='center'>
+          Login to application
+        </Header>
+        <Form size='large' onSubmit={handleLogin}>
+          <Segment stacked>
+            <Form.Input {...username} fluid icon='user' iconPosition='left' placeholder='Username' />
+            <Form.Input {...password} fluid icon='lock' iconPosition='left' placeholder='Password'type='password' />
+            <Button primary fluid size='large'>
+              Login
+            </Button>
+          </Segment>
+        </Form>
+      </Grid.Column>
+    </Grid>
   )
 }
 

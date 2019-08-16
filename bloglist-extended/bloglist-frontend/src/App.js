@@ -8,10 +8,10 @@ import BlogDetails from './components/BlogDetails'
 import BlogForm from './components/BlogForm'
 import User from './components/User'
 import Users from './components/Users'
-import Notification from './components/Notification'
 import { setUser } from './reducers/loginReducer'
 import { initializeUsers } from './reducers/userReducer'
 import { initializeBlogs,  } from './reducers/blogReducer'
+import { Container } from 'semantic-ui-react'
 
 const App = props => {
   useEffect(() => {
@@ -27,21 +27,24 @@ const App = props => {
   }, [])
 
   if (props.user === null) {
-    return <LoginForm />
+    return (
+      <Container>
+        <LoginForm />
+      </Container>
+    )
   }
 
   return (
-    <div>
+    <Container>
       <Router>
         <Navigation />
-        <Notification />
         <Route exact path="/users" component={Users} />
         <Route exact path="/users/:id" component={User} />
         <Route exact path="/" component={BlogForm} />
         <Route exact path="/" component={Blog} />
         <Route exact path="/blogs/:id" component={BlogDetails} />
       </Router>
-    </div>
+    </Container>
   )
 }
 

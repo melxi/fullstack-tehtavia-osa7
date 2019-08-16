@@ -22,7 +22,7 @@ export const setUser = () => {
     }
     dispatch({
       type: 'USER_LOGIN',
-      data: user
+      data: user || null
     })
   }
 }

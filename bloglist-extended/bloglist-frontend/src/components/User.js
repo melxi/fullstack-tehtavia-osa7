@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Item } from 'semantic-ui-react'
 
 const User = (props) => {
   if (props.user === undefined) {
@@ -9,11 +10,13 @@ const User = (props) => {
     <div>
       <h2>{props.user.name}</h2>
       <h3>added blogs</h3>
-      <ul>
+      <Item.Group divided>
         {props.user.blogs.map(blog => (
-          <li key={blog.id}>{blog.title}</li>
+          <Item key={blog.id}>
+            <Item.Content>{blog.title}</Item.Content>
+          </Item>
         ))}
-      </ul>
+      </Item.Group>
     </div>
   )
 }
