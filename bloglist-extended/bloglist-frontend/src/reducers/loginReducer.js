@@ -12,8 +12,14 @@ const loginReducer = (state = null, action) => {
   }
 }
 
-export const setUser = user => {
+export const setUser = () => {
   return dispatch => {
+    let user
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
+    if (loggedUserJSON) {
+      user = JSON.parse(loggedUserJSON)
+      blogService.setToken(user.token)
+    }
     dispatch({
       type: 'USER_LOGIN',
       data: user

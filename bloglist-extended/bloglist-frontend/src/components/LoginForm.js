@@ -1,6 +1,26 @@
 import React from 'react'
+import { useField } from '../hooks'
+import { connect } from 'react-redux'
+import { userLogin } from '../reducers/loginReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
-const LoginForm = ({username, password, handleLogin}) => {
+const LoginForm = (props) => {
+  const [username] = useField('text')
+  const [password] = useField('password')
+
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    try {
+      const user = await props.userLogin({
+        username: username.value,
+        password: password.value
+      })
+      props.setNotification(`${user.username} successfully logged in`)
+    } catch (exception) {
+      props.setNotification('wrong username or password', 'error')
+    }
+  }
+
   return (
     <div>
       <h1>log in to application</h1>
@@ -19,4 +39,9 @@ const LoginForm = ({username, password, handleLogin}) => {
   )
 }
 
-export default LoginForm
+const mapDispatchToProps = {
+  userLogin,
+  setNotification
+}
+
+export default connect(null, mapDispatchToProps)(LoginForm)

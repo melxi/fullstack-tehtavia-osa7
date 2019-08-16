@@ -1,7 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { likeBlog, removeBlog } from '../reducers/blogReducer'
+import { likeBlog, removeBlog, commentBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { useField } from '../hooks'
 
 const BlogDetails = (props) => {
   const {
@@ -9,8 +10,10 @@ const BlogDetails = (props) => {
     blog,
     likeBlog,
     removeBlog,
+    commentBlog,
     setNotification
   } = props
+  const [comment, resetComment] = useField('text')
 
   const like = blog => {
     likeBlog(blog)
@@ -27,6 +30,12 @@ const BlogDetails = (props) => {
     }
   }
 
+  const handleSubmit = event => {
+    event.preventDefault()
+    commentBlog({ content: comment.value }, blog.id)
+    resetComment()
+  }
+
   if (blog === undefined) {
     return null
   }
@@ -41,8 +50,12 @@ const BlogDetails = (props) => {
         {blog.user.username === user.username &&(<button onClick={() => remove(blog)}>remove </button>)}
       </div>
       <h3>comments</h3>
+      <form onSubmit={handleSubmit}>
+        <input {...comment} />
+        <button type="submit">add comment</button>
+      </form>
       <ul>
-        {blog.comments.map(comment => <li key={blog.id}>{comment}</li>)}
+        {blog.comments.map(comment => <li key={comment}>{comment}</li>)}
       </ul>
     </div>
   )
@@ -59,6 +72,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = {
   likeBlog,
   removeBlog,
+  commentBlog,
   setNotification
 }
 

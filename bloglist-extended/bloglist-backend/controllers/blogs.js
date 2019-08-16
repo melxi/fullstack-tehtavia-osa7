@@ -51,14 +51,13 @@ blogsRouter.post('/:id/comments', async (request, response, next) => {
   const body = request.body
   
   try {
-    const blog = await Blog.findById(request.params.id)
+    const blog = await Blog.findById(request.params.id).populate('user', {username: 1, name: 1, id: 1})
     blog.comments = blog.comments.concat(body.content)
-    await blog.save()
-    response.status(201).json(blog)
+    const savedBlog = await blog.save()
+    response.status(201).json(savedBlog)
   } catch (exception) {
     next(exception)
   }
-
 })
 
 blogsRouter.delete('/:id', async (request, response, next) => {

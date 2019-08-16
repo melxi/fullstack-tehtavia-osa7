@@ -2,10 +2,10 @@ import userService from '../services/users'
 
 const userReducer = (state = [], action) => {
   switch (action.type) {
-    case 'INITIALIZE':
-      return action.data
-    default:
-      return state
+  case 'INITIALIZE':
+    return action.data
+  default:
+    return state
   }
 }
 

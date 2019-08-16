@@ -20,12 +20,15 @@ const Navigation = (props) => {
   }
 
   return (
-    <nav style={navigationStyle}>
-      <li style={navLinkStyle}><Link to="/">blogs</Link></li>
-      <li style={navLinkStyle}><Link to="/users">users</Link></li>
-      <li style={navLinkStyle}><p>{props.user.name} logged in</p></li>
-      <li style={navLinkStyle}><button onClick={handleLogout}>logout</button></li>
-    </nav>
+    <header>
+      <nav style={navigationStyle}>
+        <li style={navLinkStyle}><Link to="/">blogs</Link></li>
+        <li style={navLinkStyle}><Link to="/users">users</Link></li>
+        <li style={navLinkStyle}><p>{props.user.name} logged in</p></li>
+        <li style={navLinkStyle}><button onClick={handleLogout}>logout</button></li>
+      </nav>
+      <h2>blog app</h2>
+    </header>
   )
 }
 

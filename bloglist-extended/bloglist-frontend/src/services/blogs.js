@@ -25,12 +25,17 @@ const create = (newObject) => {
   return request.then(response => response.data)
 }
 
+const comment = (newObject, id) => {
+  const request = axios.post(`${baseUrl}/${id}/comments`, newObject)
+  return request.then(response => response.data)
+}
+
 const update = (newObject) => {
   const request = axios.put(`${baseUrl}/${newObject.id}`, newObject)
   return request.then(response => response.data)
 }
 
-const remove = object => {  
+const remove = object => {
   const config = {
     headers: { Authorization: token }
   }
@@ -39,4 +44,4 @@ const remove = object => {
   return request.then(response => response.data)
 }
 
-export default { setToken, destroyToken, getAll, create, update, remove }
+export default { setToken, destroyToken, getAll, create, update, comment, remove }
