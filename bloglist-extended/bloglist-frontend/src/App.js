@@ -28,9 +28,7 @@ const App = props => {
 
   if (props.user === null) {
     return (
-      <Container>
-        <LoginForm />
-      </Container>
+      <LoginForm />
     )
   }
 
