@@ -32,8 +32,8 @@ const LoginForm = (props) => {
         </Header>
         <Form size='large' onSubmit={handleLogin}>
           <Segment stacked>
-            <Form.Input {...username} fluid icon='user' iconPosition='left' placeholder='Username' />
-            <Form.Input {...password} fluid icon='lock' iconPosition='left' placeholder='Password'type='password' />
+            <Form.Input {...username} id="username" fluid icon='user' iconPosition='left' placeholder='Username' />
+            <Form.Input {...password} id="password" fluid icon='lock' iconPosition='left' placeholder='Password' />
             <Button primary fluid size='large'>
               Login
             </Button>
