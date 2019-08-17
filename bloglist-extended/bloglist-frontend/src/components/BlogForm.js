@@ -33,7 +33,7 @@ const BlogForm = props => {
   }
 
   return (
-    <Togglable buttonLabel="new note">
+    <Togglable buttonLabel="add blog">
       <Header
         as='h3'
         content='create new'
@@ -46,15 +46,15 @@ const BlogForm = props => {
       <Form onSubmit={handleSubmit}>
         <Form.Field>
           <label>title</label>
-          <input {...title} placeholder='title' />
+          <input {...title} placeholder='title' id="title"/>
         </Form.Field>
         <Form.Field>
           <label>author</label>
-          <input {...author} placeholder='author' />
+          <input {...author} placeholder='author' id="author"/>
         </Form.Field>
         <Form.Field>
           <label>url</label>
-          <input {...url} placeholder='url' />
+          <input {...url} placeholder='url' id="url"/>
         </Form.Field>
         <Button positive type='submit'>create</Button>
       </Form>
