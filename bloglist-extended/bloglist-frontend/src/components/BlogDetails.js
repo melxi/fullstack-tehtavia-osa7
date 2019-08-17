@@ -72,7 +72,7 @@ const BlogDetails = (props) => {
           comments
         </Header>
         <Form onSubmit={handleSubmit}>
-          <Input {...comment} action='comment' placeholder='add comment' />
+          <Input {...comment} action='comment' placeholder='add comment' id="comment" />
         </Form>
         {blog.comments.map(comment => (
           <Comment key={comment}>
