@@ -17,7 +17,7 @@ describe('Bloglist app', function() {
   describe('when logged in', function() {
     beforeEach(function() {
       cy.get('#username')
-      .type('Melxi')
+        .type('Melxi')
       cy.get('#password')
         .type('test')
       cy.get('button')
@@ -68,7 +68,7 @@ describe('Bloglist app', function() {
     describe('when added blog', function() {
       beforeEach(function() {
         cy.contains('add blog')
-        .click()
+          .click()
         cy.get('#title')
           .type('view added blog')
         cy.get('#author')
