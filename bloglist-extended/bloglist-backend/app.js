@@ -18,6 +18,7 @@ mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useFindAndModify: 
 
 app.use(cors())
 app.use(bodyParser.json())
+app.use(express.static('build'))
 app.use(middleware.requestLogger)
 app.use(middleware.tokenExtractor)
 
